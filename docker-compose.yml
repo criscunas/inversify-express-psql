@@ -1,0 +1,28 @@
+version: '3'
+services:
+    app:
+        container_name: inversify-express
+        restart: on-failure
+        build: .
+        depends_on:
+            - postgres
+        environment:
+            DATABASE_URL: postgres://${D_PG_USER}:${D_PG_PASSWORD}@postgres:5432/${D_PG_DB_NAME}
+            NODE_ENV: development
+            PORT: 3000
+        ports:
+            - "3000:3000"
+        command: npm start
+        volumes:
+            - .:/app/
+            - /app/node_modules
+
+    postgres:
+        container_name: inversify-pgsql
+        image: postgres:latest
+        ports:
+            - "35432:5432"
+        environment:
+            POSTGRES_USER: "${D_PG_USER}"
+            POSTGRES_PASSWORD: "${D_PG_PASSWORD}"
+            POSTGRES_DB: "${D_PG_DB_NAME}"
